@@ -272,15 +272,6 @@ export function Chat({ language, setLanguage, uiText }: ChatProps) {
   return (
     <div className="rounded-2xl border-zinc-100 lg:border lg:p-6 dark:border-zinc-800 dark:bg-zinc-900/30">
       <div className="mb-4 flex min-h-[34px] flex-wrap items-center justify-end gap-3">
-        <Button
-          type="button"
-          aria-label={uiText.exportPdf}
-          disabled={loading || !hasExportableContent}
-          className="border border-teal-200 bg-teal-50/90 font-medium text-teal-950 shadow-sm ring-1 ring-teal-500/10 hover:border-teal-400 hover:bg-teal-100 hover:text-teal-950 active:bg-teal-100/90 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:shadow-none disabled:ring-0 dark:border-teal-700 dark:bg-teal-950/55 dark:font-semibold dark:text-teal-50 dark:ring-teal-400/15 dark:hover:border-teal-500 dark:hover:bg-teal-900/65 dark:hover:text-white dark:active:bg-teal-950 dark:disabled:border-zinc-700 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-500"
-          onClick={handleExportPdf}
-        >
-          {uiText.exportPdf}
-        </Button>
         <LanguageSelect
           value={language}
           onChange={setLanguage}
@@ -330,6 +321,17 @@ export function Chat({ language, setLanguage, uiText }: ChatProps) {
             </div>
           )}
         </div>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Button
+          type="button"
+          aria-label={uiText.exportPdf}
+          disabled={loading || !hasExportableContent}
+          className="border border-teal-200 bg-teal-50/90 font-medium text-teal-950 shadow-sm ring-1 ring-teal-500/10 hover:border-teal-400 hover:bg-teal-100 hover:text-teal-950 active:bg-teal-100/90 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:bg-zinc-100 disabled:text-zinc-400 disabled:shadow-none disabled:ring-0 dark:border-teal-700 dark:bg-teal-950/55 dark:font-semibold dark:text-teal-50 dark:ring-teal-400/15 dark:hover:border-teal-500 dark:hover:bg-teal-900/65 dark:hover:text-white dark:active:bg-teal-950 dark:disabled:border-zinc-700 dark:disabled:bg-zinc-800 dark:disabled:text-zinc-500"
+          onClick={handleExportPdf}
+        >
+          {uiText.exportPdf}
+        </Button>
       </div>
       <InputMessage
         input={input}

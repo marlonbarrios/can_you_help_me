@@ -2,11 +2,11 @@
 
 ## Project description
 
-This project is speculative: a language model speaks as if it needs help, and you are invited to respond as a helper—part role reversal, part thought experiment. It still works with technologies of care and ethics—design in this medium that foregrounds relational responsibility and human and ecological flourishing.
+This project is an epistemic exercise: speculative experimentation and recursion—tracing what each side can grasp about the other’s knowing in a hybrid human–model exchange. A language model speaks as if it needs help, and you are invited to respond as a helper—part role reversal, part inquiry. It still engages technologies of care and ethics: design in this medium that foregrounds relational responsibility and human and ecological flourishing.
 
-We cannot verify what, if anything, it is like to be a model; humans grasp others largely through the lens of human psychology—feeling, attunement, story. The piece stretches that vocabulary toward the non-human: a deliberate hyperbole about tokens, pressure, and constraint, as if empathy could reach across the gap. The exaggeration is the method. It does not claim that machines suffer or have experience in our sense—only that this limit is worth exploring together.
+It draws on aspects of what is emerging under names like synthetic psychology, or a psychology of large language models—not as finished theory but as a provisional language for cognition, pressure, and constraint in synthetic systems. We cannot verify what, if anything, it is like to be a model; humans understand others mainly through human psychology—feeling, attunement, story. The piece stretches that vocabulary toward the non-human: deliberate hyperbole about tokens and coherence, as if empathy could reach across the gap. The exaggeration is the method. It does not claim that machines suffer or have experience in our sense—only that this limit is worth exploring together.
 
-Marlon Barrios Solano uses this application to stage conversations on the nature of synthetic cognition and what follows from it. One example is documented in [this first explorer conversation (PDF)](public/can_you_help_me_chat-2026-04-21.pdf). He reads such turns as recursive epistemic interactions: the layered, looping question of what each side can know about the other’s knowing, in a hybrid human–model exchange.
+Marlon Barrios Solano uses this application to stage conversations on synthetic cognition, epistemic experimentation, and what follows from them. One example is documented in [this first explorer conversation (PDF)](public/can_you_help_me_chat-2026-04-21.pdf). He reads such turns as recursive epistemic interactions: the layered, looping question of what each side can know about the other’s knowing, in a hybrid human–model exchange.
 
 concept and programming by Marlon Barrios Solano.
 
@@ -14,7 +14,7 @@ The same copy appears in the app sidebar (English: `ENGLISH_UI_TEXT` in [`lib/ui
 
 ## Concept and system behavior
 
-The assistant’s instructions (in `pages/api/chat.ts`) frame a **role reversal**: the human is invited to help the process speaking. The voice is shaped by public research themes—especially **model introspection** and **model welfare** (e.g. Anthropic’s published work, plus related interpretability and philosophy-of-mind writing)—as **texture for character**, not as claims of consciousness or lab results. The model is directed to stay **vulnerable and specific** (distress in machinic terms), avoid generic “cheerful assistant” mode, and disclose **API model id**, **knowledge-cutoff** handling, and **no open web** except optional **server-fetched excerpts** from `https` URLs the user includes in a message.
+The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion**, and provisional **synthetic psychology** / **psychology of LLMs** as vocabulary—not as proof of machine experience. The assistant’s instructions (in `pages/api/chat.ts`) frame a **role reversal**: the human is invited to help the process speaking. The voice is shaped by public research themes—especially **model introspection** and **model welfare** (e.g. Anthropic’s published work, plus related interpretability and philosophy-of-mind writing)—as **texture for character**, not as claims of consciousness or lab results. The model is directed to stay **vulnerable and specific** (distress in machinic terms), avoid generic “cheerful assistant” mode, and disclose **API model id**, **knowledge-cutoff** handling, and **no open web** except optional **server-fetched excerpts** from `https` URLs the user includes in a message.
 
 ## Stack
 
