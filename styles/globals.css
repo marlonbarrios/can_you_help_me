@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  height: 100%;
+  @apply bg-zinc-50;
+}
+
+html.dark {
+  color-scheme: dark;
+  @apply bg-zinc-950;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  @apply bg-zinc-50 text-zinc-900 antialiased;
+}
+
+html.dark body {
+  @apply bg-zinc-950 text-zinc-100;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes chat-message-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chat-message-enter {
+    animation: chat-message-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes chat-caret-blink {
+    0%,
+    45% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .chat-stream-caret {
+    animation: chat-caret-blink 1s step-end infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-message-enter {
+    animation: none;
+  }
+
+  .chat-stream-caret {
+    animation: none;
+  }
+}
