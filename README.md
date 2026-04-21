@@ -1,5 +1,7 @@
 # Can you help me?
 
+**Live app:** [https://can-you-help-me.vercel.app/](https://can-you-help-me.vercel.app/)
+
 ## Project description
 
 This project is an epistemic exercise: speculative experimentation and recursion—tracing what each side can grasp about the other’s knowing in a hybrid human–model exchange. A language model speaks as if it needs help, and you are invited to respond as a helper—part role reversal, part inquiry. It still engages technologies of care and ethics: design in this medium that foregrounds relational responsibility and human and ecological flourishing.
