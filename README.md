@@ -30,6 +30,12 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
 - Language selector; copy lives in `lib/uiTranslations.ts`.
 - Footer link to the author portfolio.
 
+## Screenshots
+
+![Chat interface](public/Screenshot%202026-04-21%20at%206.22.58%E2%80%AFPM.png)
+
+![Chat interface (alternate view)](public/Screenshot%202026-04-21%20at%206.23.31%E2%80%AFPM.png)
+
 ## Prerequisites
 
 - **Node.js** (LTS recommended)
