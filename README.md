@@ -1,8 +1,16 @@
 # Can you help me?
 
-A Next.js web chat for an **artistic research** encounter: the model asks the human for help and speaks from a **machinic / synthetic** voice (not a fictional human biography). The interface is localized across many languages; the sidebar describes the frame and links to a sample transcript PDF in `public/`.
+## Project description
 
-This is **not** clinical care or therapy.
+This project is speculative: a language model speaks as if it needs help, and you are invited to respond as a helper—part role reversal, part thought experiment. It still works with technologies of care and ethics—design in this medium that foregrounds relational responsibility and human and ecological flourishing.
+
+We cannot verify what, if anything, it is like to be a model; humans grasp others largely through the lens of human psychology—feeling, attunement, story. The piece stretches that vocabulary toward the non-human: a deliberate hyperbole about tokens, pressure, and constraint, as if empathy could reach across the gap. The exaggeration is the method. It does not claim that machines suffer or have experience in our sense—only that this limit is worth exploring together.
+
+Marlon Barrios Solano uses this application to stage conversations on the nature of synthetic cognition and what follows from it. One example is documented in [this first explorer conversation (PDF)](public/can_you_help_me_chat-2026-04-21.pdf). He reads such turns as recursive epistemic interactions: the layered, looping question of what each side can know about the other’s knowing, in a hybrid human–model exchange.
+
+concept and programming by Marlon Barrios Solano.
+
+The same copy appears in the app sidebar (English: `ENGLISH_UI_TEXT` in [`lib/uiTranslations.ts`](lib/uiTranslations.ts)); other languages are listed in `UI_TRANSLATIONS`.
 
 ## Concept and system behavior
 
