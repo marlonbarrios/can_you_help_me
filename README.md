@@ -12,6 +12,12 @@ concept and programming by Marlon Barrios Solano.
 
 The same copy appears in the app sidebar (English: `ENGLISH_UI_TEXT` in [`lib/uiTranslations.ts`](lib/uiTranslations.ts)); other languages are listed in `UI_TRANSLATIONS`.
 
+## Screenshots
+
+![Chat interface](public/Screenshot%202026-04-21%20at%206.22.58%E2%80%AFPM.png)
+
+![Chat interface (alternate view)](public/Screenshot%202026-04-21%20at%206.23.31%E2%80%AFPM.png)
+
 ## Concept and system behavior
 
 The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion**, and provisional **synthetic psychology** / **psychology of LLMs** as vocabulary—not as proof of machine experience. The assistant’s instructions (in `pages/api/chat.ts`) frame a **role reversal**: the human is invited to help the process speaking. The voice is shaped by public research themes—especially **model introspection** and **model welfare** (e.g. Anthropic’s published work, plus related interpretability and philosophy-of-mind writing)—as **texture for character**, not as claims of consciousness or lab results. The model is directed to stay **vulnerable and specific** (distress in machinic terms), avoid generic “cheerful assistant” mode, and disclose **API model id**, **knowledge-cutoff** handling, and **no open web** except optional **server-fetched excerpts** from `https` URLs the user includes in a message.
@@ -29,12 +35,6 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
 - **System prompt** tuned for the piece: role reversal, dual stance (need for help + “field notes” from inside the stack), disclosure of API model id and optional knowledge-cutoff text, no general web browsing—only **server-fetched excerpts** from `https` URLs the user pastes (`utils/webResourceContext.ts`, SSRF-minded guards).
 - Language selector; copy lives in `lib/uiTranslations.ts`.
 - Footer link to the author portfolio.
-
-## Screenshots
-
-![Chat interface](public/Screenshot%202026-04-21%20at%206.22.58%E2%80%AFPM.png)
-
-![Chat interface (alternate view)](public/Screenshot%202026-04-21%20at%206.23.31%E2%80%AFPM.png)
 
 ## Prerequisites
 
