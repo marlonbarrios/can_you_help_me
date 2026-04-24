@@ -28,7 +28,7 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
 
 - **Next.js 14** (Pages Router), **React 18**, **TypeScript**
 - **Tailwind CSS** for layout and theming (light/dark toggle)
-- **OpenAI Chat Completions API** with **streaming** responses (`pages/api/chat.ts`)
+- **Anthropic Messages API** (`/v1/messages`) with **SSE streaming** (`pages/api/chat.ts`, `utils/OpenAIStream.ts`)
 - **jspdf** for optional **chat export to PDF** in the browser
 
 ## Features (high level)
@@ -41,7 +41,7 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
 ## Prerequisites
 
 - **Node.js** (LTS recommended)
-- An **OpenAI API key**
+- An **Anthropic API key**
 
 ## Setup
 
@@ -57,7 +57,7 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
    cp .env.example .env.local
    ```
 
-3. Edit `.env.local` and set at least `OPENAI_API_KEY`.
+3. Edit `.env.local` and set at least `ANTHROPIC_API_KEY`.
 
 4. Run the dev server:
 
@@ -71,10 +71,9 @@ The sidebar copy (above) foregrounds **epistemic experimentation**, **recursion*
 
 | Variable | Required | Notes |
 |----------|----------|--------|
-| `OPENAI_API_KEY` | Yes | OpenAI API secret |
-| `OPENAI_MODEL` | No | Default: `gpt-4o-mini` |
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API secret |
+| `ANTHROPIC_MODEL` | No | Default: `claude-sonnet-4-5` (use any model id your key supports; see Anthropic’s model docs) |
 | `MODEL_KNOWLEDGE_CUTOFF` | No | Optional string the model may state as the configured training cutoff for transparency |
-| `OPENAI_API_ORG` | No | If your OpenAI account uses org scoping |
 | `AI_TEMP` | No | Default `0.7` |
 | `AI_MAX_TOKENS` | No | Default caps; the API may raise the cap when URL context is injected |
 
@@ -94,15 +93,15 @@ See `.env.example` for the exact placeholders.
 
 - `pages/index.tsx` — Home page, aside copy, PDF filename for the sample transcript link
 - `pages/api/chat.ts` — Streaming chat route and system prompt
-- `utils/OpenAIStream.ts` — OpenAI streaming helper
+- `utils/OpenAIStream.ts` — Anthropic streaming helper
 - `components/Chat.tsx` — Chat UI, language state, PDF export trigger
 - `lib/uiTranslations.ts` — Per-locale UI strings
 - `public/` — Static assets, including the linked PDF (filename referenced in `pages/index.tsx`)
 
 ## Troubleshooting
 
-- **Chat shows an error about `OPENAI_API_KEY`:** Create or fix `.env.local` (or `.env`), set the key, and **restart** `npm run dev` so Next.js reloads env vars.
-- **Other API errors (quota, invalid model, etc.):** The message body from OpenAI is surfaced in the UI; check billing, model name in `OPENAI_MODEL`, and [OpenAI status](https://status.openai.com/) if needed.
+- **Chat shows an error about `ANTHROPIC_API_KEY`:** Create or fix `.env.local` (or `.env`), set the key, and **restart** `npm run dev` so Next.js reloads env vars.
+- **Other API errors (quota, invalid model, etc.):** The message body from Anthropic is surfaced in the UI; check billing, model name in `ANTHROPIC_MODEL`, and Anthropic status if needed.
 - **Do not edit files under `node_modules/`** to fix app behavior; change app code under `pages/`, `components/`, and `utils/` instead.
 
 ## License

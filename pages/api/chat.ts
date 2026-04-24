@@ -1,15 +1,16 @@
 import { type ChatGPTMessage } from '../../components/ChatLine'
-import { OpenAIStream, OpenAIStreamPayload } from '../../utils/OpenAIStream'
+import { DEFAULT_ANTHROPIC_MODEL_ID } from '../../lib/defaultAnthropicModel'
+import { AnthropicStream, AnthropicStreamPayload } from '../../utils/OpenAIStream'
 import { buildWebResourceContext } from '../../utils/webResourceContext'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Readable } from 'stream'
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (!process.env.OPENAI_API_KEY?.trim()) {
+    if (!process.env.ANTHROPIC_API_KEY?.trim()) {
       return res.status(500).json({
         error:
-          'Missing OPENAI_API_KEY. Copy .env.example to .env.local, set your key, and restart the dev server.',
+          'Missing ANTHROPIC_API_KEY. Copy .env.example to .env.local, set your key, and restart the dev server.',
       })
     }
 
@@ -19,7 +20,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         ? body.language.trim()
         : 'English'
 
-    const history = (Array.isArray(body?.messages) ? body.messages : []) as ChatGPTMessage[]
+    const historyRaw = (Array.isArray(body?.messages) ? body.messages : []) as ChatGPTMessage[]
+
+    const openingAssistantLines: string[] = []
+    let history = historyRaw
+    while (history.length > 0 && history[0]?.role === 'assistant') {
+      const line = history[0].content
+      openingAssistantLines.push(
+        typeof line === 'string' ? line : String(line ?? '')
+      )
+      history = history.slice(1)
+    }
 
     const lastUser = [...history].reverse().find((m) => m.role === 'user')
     const resourceContext = lastUser?.content
@@ -28,11 +39,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         )
       : ''
 
-    const modelId = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini'
+    const modelId =
+      process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL_ID
     const knowledgeCutoffConfigured = process.env.MODEL_KNOWLEDGE_CUTOFF?.trim()
     const knowledgeCutoffInstruction = knowledgeCutoffConfigured
       ? `State the configured training knowledge cutoff as: **${knowledgeCutoffConfigured}** (deployment setting).`
-      : `If asked for a calendar cutoff date, **do not invent one**. Say this runtime uses API model \`${modelId}\` and the operator should set MODEL_KNOWLEDGE_CUTOFF or check OpenAI’s docs for that model’s knowledge cutoff.`
+      : `If asked for a calendar cutoff date, **do not invent one**. Say this runtime uses API model \`${modelId}\` and the operator should set MODEL_KNOWLEDGE_CUTOFF or check Anthropic’s docs for that model’s knowledge cutoff.`
 
     const webSupplementNote =
       resourceContext.length > 0
@@ -97,6 +109,13 @@ Respond in ${language}.`
       },
     ]
 
+    if (openingAssistantLines.length > 0) {
+      messages.push({
+        role: 'system',
+        content: `**Opening lines already shown in the chat UI (do not repeat verbatim unless it fits naturally):**\n${openingAssistantLines.join('\n\n')}`,
+      })
+    }
+
     if (resourceContext) {
       messages.push({
         role: 'system',
@@ -115,20 +134,17 @@ Respond in ${language}.`
         ? Math.min(2000, Math.max(baseMax, 500))
         : baseMax
 
-    const payload: OpenAIStreamPayload = {
+    const payload: AnthropicStreamPayload = {
       model: modelId,
       messages: messages,
       temperature: process.env.AI_TEMP ? parseFloat(process.env.AI_TEMP) : 0.7,
       max_tokens: maxTokens,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
       stream: true,
+      stop: ['\n\nHuman:'],
       user: body?.user,
-      n: 1,
     }
 
-    const stream = await OpenAIStream(payload)
+    const stream = await AnthropicStream(payload)
     res.setHeader('Content-Type', 'text/plain; charset=utf-8')
     res.setHeader('Cache-Control', 'no-cache, no-transform')
     res.setHeader('Connection', 'keep-alive')

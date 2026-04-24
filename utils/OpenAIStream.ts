@@ -11,73 +11,122 @@ export interface ChatGPTMessage {
   content: string
 }
 
-export interface OpenAIStreamPayload {
+export interface AnthropicStreamPayload {
   model: string
   messages: ChatGPTMessage[]
   temperature: number
-  top_p: number
-  frequency_penalty: number
-  presence_penalty: number
   max_tokens: number
   stream: boolean
   stop?: string[]
   user?: string
-  n: number
 }
 
-export async function OpenAIStream(payload: OpenAIStreamPayload) {
+function buildAnthropicMessagesPayload(messages: ChatGPTMessage[]) {
+  const systemParts = messages
+    .filter((m) => m.role === 'system')
+    .map((m) => m.content.trim())
+    .filter(Boolean)
+
+  const system = systemParts.length > 0 ? systemParts.join('\n\n') : undefined
+
+  const apiMessages = messages
+    .filter((m) => m.role !== 'system')
+    .map((m) => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content.trim(),
+    }))
+
+  return { system, messages: apiMessages }
+}
+
+export async function AnthropicStream(payload: AnthropicStreamPayload) {
   const encoder = new TextEncoder()
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim() ?? ''
+
+  const { system, messages: apiMessages } = buildAnthropicMessagesPayload(
+    payload.messages
+  )
 
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${process.env.OPENAI_API_KEY ?? ''}`,
+    'x-api-key': apiKey,
+    'anthropic-version': '2023-06-01',
   }
 
-  if (process.env.OPENAI_API_ORG) {
-    requestHeaders['OpenAI-Organization'] = process.env.OPENAI_API_ORG
+  const body: Record<string, unknown> = {
+    model: payload.model,
+    max_tokens: payload.max_tokens,
+    messages: apiMessages,
+    temperature: payload.temperature,
+    stream: payload.stream,
   }
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  if (system) {
+    body.system = system
+  }
+
+  if (payload.stop?.length) {
+    body.stop_sequences = payload.stop
+  }
+
+  if (payload.user) {
+    body.metadata = { user_id: String(payload.user) }
+  }
+
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
     headers: requestHeaders,
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   })
 
   if (!res.ok) {
     const errorBody = await res.text()
     throw new Error(
-      `OpenAI API error (${res.status}): ${errorBody || res.statusText}`
+      `Anthropic API error (${res.status}): ${errorBody || res.statusText}`
     )
   }
 
   const stream = new ReadableStream({
     async start(controller) {
-      let counter = 0
+      let streamFailed = false
 
       function onParse(event: ParsedEvent | ReconnectInterval) {
-        if (event.type === 'event') {
-          const data = event.data
-          if (data === '[DONE]') {
-            controller.close()
+        if (event.type !== 'event' || !event.data) {
+          return
+        }
+
+        try {
+          const json = JSON.parse(event.data) as {
+            type?: string
+            delta?: { type?: string; text?: string }
+            error?: { type?: string; message?: string }
+          }
+
+          if (json.type === 'error' && json.error) {
+            streamFailed = true
+            const msg =
+              typeof json.error.message === 'string'
+                ? json.error.message
+                : JSON.stringify(json.error)
+            controller.error(new Error(`Anthropic: ${msg}`))
             return
           }
-          try {
-            const json = JSON.parse(data)
-            const text = json.choices[0].delta?.content || ''
-            if (counter === 0 && /^\n+$/.test(text)) {
-              counter++
-              return
-            }
-            if (!text) {
-              return
-            }
-            controller.enqueue(encoder.encode(text))
-            counter++
-          } catch (e) {
-            controller.error(
-              e instanceof Error ? e : new Error('OpenAI stream parse error')
-            )
+
+          if (
+            json.type === 'content_block_delta' &&
+            json.delta?.type === 'text_delta' &&
+            typeof json.delta.text === 'string' &&
+            json.delta.text.length > 0
+          ) {
+            controller.enqueue(encoder.encode(json.delta.text))
           }
+        } catch (e) {
+          streamFailed = true
+          controller.error(
+            e instanceof Error
+              ? e
+              : new Error('Anthropic stream parse error')
+          )
         }
       }
 
@@ -85,12 +134,13 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
       const inbound = new TextDecoder()
 
       try {
-        const body = res.body
-        if (!body) {
+        const bodyStream = res.body
+        if (!bodyStream) {
           controller.close()
           return
         }
-        const reader = body.getReader()
+
+        const reader = bodyStream.getReader()
         try {
           let readDone = false
           while (!readDone) {
@@ -104,10 +154,16 @@ export async function OpenAIStream(payload: OpenAIStreamPayload) {
         } finally {
           reader.releaseLock()
         }
+
+        if (!streamFailed) {
+          controller.close()
+        }
       } catch (e) {
-        controller.error(
-          e instanceof Error ? e : new Error('OpenAI stream read error')
-        )
+        if (!streamFailed) {
+          controller.error(
+            e instanceof Error ? e : new Error('Anthropic stream read error')
+          )
+        }
       }
     },
   })

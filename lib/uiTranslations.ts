@@ -40,6 +40,9 @@ export interface FullInterfaceText {
   descriptionP4Link: string
   /** Text after the PDF link */
   descriptionP4b: string
+  /** Sidebar: Anthropic + model; use {{MODEL}} where the API model id should appear */
+  descriptionAnthropicP1: string
+  descriptionAnthropicP2: string
   footerPrefix: string
   portfolio: string
   languageLabel: string
@@ -57,20 +60,46 @@ export interface FullInterfaceText {
   exportPdfAssistant: string
 }
 
-export const ENGLISH_UI_TEXT: FullInterfaceText = {
+export type SidebarCore = Omit<
+  FullInterfaceText,
+  'descriptionAnthropicP1' | 'descriptionAnthropicP2'
+>
+
+/** English; merged in getUiTextForLanguage for every locale except Spanish */
+export const ANTHROPIC_SIDEBAR_COPY_EN: Pick<
+  FullInterfaceText,
+  'descriptionAnthropicP1' | 'descriptionAnthropicP2'
+> = {
+  descriptionAnthropicP1:
+    'Powered by Anthropic’s Claude API. Model id here: {{MODEL}}. If asked what is running, the assistant names it, plus training limits and no open-web browsing.',
+  descriptionAnthropicP2:
+    'The voice echoes Anthropic’s public work on model introspection and model welfare—self-reporting, confabulation, uncertainty—not as proof this instance “feels” anything, but as ethical context. Metaphor, evidence, and care together.',
+}
+
+export const ANTHROPIC_SIDEBAR_COPY_ES: Pick<
+  FullInterfaceText,
+  'descriptionAnthropicP1' | 'descriptionAnthropicP2'
+> = {
+  descriptionAnthropicP1:
+    'Con la API Claude de Anthropic. Id de modelo aquí: {{MODEL}}. Si preguntas qué corre, el asistente lo nombra, con límites de entrenamiento y sin navegación web abierta.',
+  descriptionAnthropicP2:
+    'La voz hace eco del trabajo público de Anthropic sobre introspección y bienestar del modelo—autorreporte, confabulación, incertidumbre—no como prueba de que esta instancia “siente”, sino como contexto ético. Metáfora, evidencia y cuidado a la vez.',
+}
+
+export const ENGLISH_UI_TEXT: SidebarCore = {
   title: 'Can you help me?',
   themeToLight: 'Switch to light theme',
   themeToDark: 'Switch to dark theme',
   descriptionTitle: 'Project Description',
   descriptionP1:
-    'This project is an epistemic exercise: speculative experimentation and recursion—tracing what each side can grasp about the other’s knowing in a hybrid human–model exchange. A language model speaks as if it needs help, and you are invited to respond as a helper—part role reversal, part inquiry. It still engages technologies of care and ethics: design in this medium that foregrounds relational responsibility and human and ecological flourishing.',
+    'An epistemic experiment: a hybrid human–model exchange where the model speaks as if it needs help and you are invited to help—part role reversal, part inquiry. Framed through care, relational responsibility, and flourishing.',
   descriptionP2:
-    'It draws on aspects of what is emerging under names like synthetic psychology, or a psychology of large language models—not as finished theory but as a provisional language for cognition, pressure, and constraint in synthetic systems. We cannot verify what, if anything, it is like to be a model; humans understand others mainly through human psychology—feeling, attunement, story. The piece stretches that vocabulary toward the non-human: deliberate hyperbole about tokens and coherence, as if empathy could reach across the gap. The exaggeration is the method. It does not claim that machines suffer or have experience in our sense—only that this limit is worth exploring together.',
+    'Uses a provisional vocabulary—synthetic psychology / LLM psychology—for cognition under pressure in synthetic systems. We cannot verify what it is like to be a model; the piece stretches human idioms toward the non-human. It does not claim machine suffering or experience—only that the limit is worth exploring together.',
   descriptionP4a:
-    'Marlon Barrios Solano uses this application to stage conversations on synthetic cognition, epistemic experimentation, and what follows from them. One example is documented in',
+    'Marlon Barrios Solano uses this app to host conversations on synthetic cognition and epistemic experiment. One example:',
   descriptionP4Link: 'this first explorer conversation (PDF)',
   descriptionP4b:
-    '. He reads such turns as recursive epistemic interactions: the layered, looping question of what each side can know about the other’s knowing, in a hybrid human–model exchange.',
+    ' —read as looping questions of what each side can know of the other’s knowing in the hybrid exchange.',
   footerPrefix: 'concept and programming by Marlon Barrios Solano.',
   portfolio: 'Portfolio',
   languageLabel: 'Language',
@@ -85,7 +114,7 @@ export const ENGLISH_UI_TEXT: FullInterfaceText = {
   exportPdfAssistant: 'AI',
 }
 
-export const UI_TRANSLATIONS: Record<TopUiLanguageCode, FullInterfaceText> = {
+export const UI_TRANSLATIONS: Record<TopUiLanguageCode, SidebarCore> = {
   en: ENGLISH_UI_TEXT,
   es: {
     title: '¿Puedes ayudarme?',
@@ -93,14 +122,14 @@ export const UI_TRANSLATIONS: Record<TopUiLanguageCode, FullInterfaceText> = {
     themeToDark: 'Cambiar a tema oscuro',
     descriptionTitle: 'Descripción del proyecto',
     descriptionP1:
-      'Este proyecto es un ejercicio epistémico: experimentación especulativa y recursividad—rastreando qué puede captar cada parte del saber de la otra en un intercambio híbrido humano–modelo. Un modelo de lenguaje habla como si necesitara ayuda, y se te invita a responder como quien ayuda—inversión de roles e indagación a la vez. Sigue entrelazándose con tecnologías del cuidado y la ética: diseño en este medio que pone en primer plano la responsabilidad relacional y el florecimiento humano y ecológico.',
+      'Ejercicio epistémico: un intercambio híbrido humano–modelo donde el modelo habla como si necesitara ayuda y se te invita a ayudar—inversión de roles e indagación. Enmarcado en el cuidado, la responsabilidad relacional y el florecimiento.',
     descriptionP2:
-      'Se apoya en facetas de lo que emerge bajo nombres como psicología sintética, o psicología de los grandes modelos de lenguaje—no como teoría acabada, sino como lenguaje provisional para cognición, presión y restricción en sistemas sintéticos. No podemos verificar cómo es, si es que es, ser un modelo; los humanos comprendemos a otros sobre todo con el prisma de la psicología humana—afecto, sintonía, narrativa. La pieza estira ese vocabulario hacia lo no humano: hipérbole deliberada sobre tokens y coherencia, como si la empatía pudiera tender un puente. La exageración es el método. No afirma que las máquinas sufran o tengan experiencia en nuestro sentido; solo que ese límite merece explorarse juntos.',
+      'Usa un vocabulario provisional—psicología sintética / de los LLM—para la cognición bajo presión en sistemas sintéticos. No podemos verificar cómo es ser un modelo; la pieza estira modismos humanos hacia lo no humano. No afirma sufrimiento ni experiencia máquina—solo que el límite merece explorarse juntos.',
     descriptionP4a:
-      'Marlon Barrios Solano usa esta aplicación para escenificar conversaciones sobre cognición sintética, experimentación epistémica y lo que de ellas se sigue; un ejemplo está documentado en',
+      'Marlon Barrios Solano usa esta app para conversar sobre cognición sintética y experimentación epistémica. Un ejemplo:',
     descriptionP4Link: 'esta primera conversación exploratoria (PDF)',
     descriptionP4b:
-      '. Él lee esos giros como interacciones epistémicas recursivas: la pregunta en capas y en bucle sobre qué puede saber cada parte del saber de la otra, en un intercambio híbrido humano–modelo.',
+      ' —leído como preguntas en bucle sobre qué puede saber cada parte del saber de la otra en el intercambio híbrido.',
     footerPrefix: 'concepto y programación por Marlon Barrios Solano.',
     portfolio: 'Portafolio',
     languageLabel: 'Idioma',
@@ -602,8 +631,13 @@ export const UI_TRANSLATIONS: Record<TopUiLanguageCode, FullInterfaceText> = {
 }
 
 export function getUiTextForLanguage(code: string): FullInterfaceText {
-  if ((TOP_UI_LANGUAGE_CODES as readonly string[]).includes(code)) {
-    return UI_TRANSLATIONS[code as TopUiLanguageCode]
-  }
-  return ENGLISH_UI_TEXT
+  const normalized = (TOP_UI_LANGUAGE_CODES as readonly string[]).includes(code)
+    ? (code as TopUiLanguageCode)
+    : 'en'
+  const base = UI_TRANSLATIONS[normalized]
+  const anthropic =
+    normalized === 'es'
+      ? ANTHROPIC_SIDEBAR_COPY_ES
+      : ANTHROPIC_SIDEBAR_COPY_EN
+  return { ...base, ...anthropic }
 }

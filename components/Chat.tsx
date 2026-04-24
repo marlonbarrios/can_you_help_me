@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { englishLanguageName } from '../lib/languages'
 import { downloadChatAsPdf } from '../utils/exportChatPdf'
 import { Button } from './Button'
@@ -97,7 +97,7 @@ export function Chat({ language, setLanguage, uiText }: ChatProps) {
     stickToBottomRef.current = distanceFromBottom < SCROLL_BOTTOM_THRESHOLD_PX
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = scrollContainerRef.current
     if (!el || !stickToBottomRef.current) return
     el.scrollTop = el.scrollHeight

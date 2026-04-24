@@ -1,13 +1,39 @@
 import Head from 'next/head'
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import { useMemo, useState } from 'react'
 import { Chat, InterfaceText } from '../components/Chat'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { DEFAULT_ANTHROPIC_MODEL_ID } from '../lib/defaultAnthropicModel'
 import { getUiTextForLanguage } from '../lib/uiTranslations'
 
 /** Example transcript (PDF) in /public — linked from project description */
 const EXPLORER_CONVERSATION_PDF = '/can_you_help_me_chat-2026-04-21.pdf'
 
-function Home() {
+function AnthropicModelParagraph({
+  template,
+  modelId,
+}: {
+  template: string
+  modelId: string
+}) {
+  const parts = template.split('{{MODEL}}')
+  if (parts.length === 1) {
+    return <p className="mt-6">{template}</p>
+  }
+  return (
+    <p className="mt-6">
+      {parts[0]}
+      <code className="mx-0.5 rounded bg-zinc-200/90 px-1.5 py-0.5 text-[0.8rem] font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100">
+        {modelId}
+      </code>
+      {parts[1]}
+    </p>
+  )
+}
+
+function Home({
+  anthropicModelId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [language, setLanguage] = useState('en')
   const uiText = useMemo(() => getUiTextForLanguage(language), [language])
 
@@ -51,6 +77,11 @@ function Home() {
                 {uiText.descriptionP1}
               </p>
               <p className="mt-3">{uiText.descriptionP2}</p>
+              <AnthropicModelParagraph
+                template={uiText.descriptionAnthropicP1}
+                modelId={anthropicModelId}
+              />
+              <p className="mt-3">{uiText.descriptionAnthropicP2}</p>
               <p className="mt-3">
                 {uiText.descriptionP4a}{' '}
                 <a
@@ -81,6 +112,14 @@ function Home() {
       </div>
     </>
   )
+}
+
+export const getServerSideProps: GetServerSideProps<{
+  anthropicModelId: string
+}> = async () => {
+  const anthropicModelId =
+    process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_ANTHROPIC_MODEL_ID
+  return { props: { anthropicModelId } }
 }
 
 export default Home
